@@ -27,65 +27,120 @@ let tree = d3.tree;
 let hierarchy = d3.hierarchy;
 let select = d3.select;
 let data = {
-    "name": "Steven King",
+    "name": "Animalia",
     "children": [
         {
-            "name": "Neena Kochhar",
+            "name": "Chordate",
             "children": [
                 {
-                    "name": "Hermann Baer"
-                },
-                {
-                    "name": "Shelley Higgins"
-                },
-                {
-                    "name": "Nancy Greenberg",
+                    "name": "Mammal",
                     "children": [
                         {
-                            "name": "Ismael Sciarra"
+                            "name": "Primate",
+                            "children": [
+                                {
+                                    "name": "Hominidae",
+                                    "children": [
+                                        {
+                                            "name": "Homo",
+                                            "children": [
+                                                {
+                                                    "name": "Sapiens",
+                                                    "children": [
+                                                        {
+                                                            "name": "Human"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Pongidae",
+                                    "children": [
+                                        {
+                                            "name": "Pan",
+                                            "children": [
+                                                {
+                                                    "name": "Troglodytes",
+                                                    "children": [
+                                                        {
+                                                            "name": "Chimpanzee"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         },
                         {
-                            "name": "Jose Manuel Urman"
-                        },
-                        {
-                            "name": "Luis Popp"
+                            "name": "Carnivora",
+                            "children": [
+                                {
+                                    "name": "Felidae",
+                                    "children": [
+                                        {
+                                            "name": "Felis",
+                                            "children": [
+                                                {
+                                                    "name": "Domestica",
+                                                    "children": [
+                                                        {
+                                                            "name": "House Cat"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Leo",
+                                                    "children": [
+                                                        {
+                                                            "name": "Lion"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }
             ]
         },
         {
-            "name": "Lex De Haan",
+            "name": "Arthropoda",
             "children": [
                 {
-                    "name": "Alexander Hunold",
+                    "name": "Insect",
                     "children": [
                         {
-                            "name": "Bruce Ernst"
-                        },
-                        {
-                            "name": "Valli Pataballa"
+                            "name": "Diptera",
+                            "children": [
+                                {
+                                    "name": "Muscidae",
+                                    "children": [
+                                        {
+                                            "name": "Musca",
+                                            "children": [
+                                                {
+                                                    "name": "Domestic",
+                                                    "children": [
+                                                        {
+                                                            "name": "Housefly"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "name": "Den Raphaely",
-            "children": [
-                {
-                    "name": "Alexander Khoo"
-                },
-                {
-                    "name": "Shelli Baida"
-                }
-            ]
-        },
-        {
-            "name": "Adam Fripp",
-            "children": [
-                {
-                    "name": "Laura Bissot"
                 }
             ]
         }
