@@ -12,6 +12,7 @@ import modules.utils as utils
 st.set_page_config(layout="wide")
 st.title("Hierarchical Data Viewer")
 st.caption("Display your hierarchical data with charts and graphs.")
+st.write(st.experimental_user)
 
 @st.cache_data(show_spinner="Loading the CSV file...")
 def loadFile(filename):
