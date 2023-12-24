@@ -18,18 +18,9 @@ def loadFile(filename):
     return pd.read_csv(filename).convert_dtypes()
 
 with st.sidebar:
-    session = None
-    if utils.isLocal():
-        session = utils.getLocalSession()
-    else:
-        with st.form("my-form"):
-            account = st.text_input("Account #:")
-            user = st.text_input("User Name:")
-            password = st.text_input("Password", type='password')
-            if st.form_submit_button("Connect to Snowflake"):
-                session = utils.getSession(account, user, password)
-                if session is None:
-                    st.error("Cannot connect!")
+    session = (utils.getLocalSession()
+        if utils.isLocal()
+        else utils.getRemoteSession())
 
     tableName = st.text_input("Full table/view name:")
     hasTable = session is not None and tableName is not None and len(tableName) > 0
