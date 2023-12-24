@@ -43,10 +43,11 @@ def getRemoteSession():
         account = st.text_input("Account #:")
         user = st.text_input("User Name:")
         password = st.text_input("Password", type='password')
-        if st.form_submit_button("Connect to Snowflake"):
+        st.form_submit_button("Connect to Snowflake")
+        if len(account) > 0 and len(user) > 0 and len(password) > 0:
             session = getSession(account, user, password)
             if session is None:
                 st.error("Cannot connect!")
-    if session is not None:
-        st.info("Connected to Snowflake.")
+        if session is not None:
+            st.info("Connected to Snowflake.")
     return session
