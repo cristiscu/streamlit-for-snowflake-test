@@ -1,12 +1,10 @@
 import json
 import streamlit as st
 import streamlit.components.v1 as components
-import pandas as pd
 from io import StringIO
 import modules.graphs as graphs
 import modules.formats as formats
 import modules.charts as charts
-import modules.animated as animated
 import modules.utils as utils
 
 st.set_page_config(layout="wide")
@@ -14,9 +12,11 @@ st.title("Hierarchical Data Viewer")
 st.caption("Display your hierarchical data with charts and graphs.")
 
 with st.sidebar:
-    session = (utils.getLocalSession()
-        if utils.isLocal()
-        else utils.getRemoteSession())
+    session = utils.getStreamlitAppSession()
+    if session is None:
+        session = (utils.getLocalSession()
+            if utils.isLocal()
+            else utils.getRemoteSession())
 
     tableName = None
     if session is not None:
@@ -46,7 +46,9 @@ with tabSource:
     st.dataframe(df_orig, use_container_width=True)
 
 with tabPath:
-    if hasTable:
+    if not hasTable:
+        st.warning("Select a table/view")
+    else:
         child_index = cols.index(child) + 1
         parent_index = cols.index(parent) + 1
         query = f"""
@@ -85,7 +87,8 @@ with tabFormat:
 with tabGraph:
     graph = graphs.getEdges(df)
     url = graphs.getUrl(graph)
-    st.link_button("Visualize Online", url)
+    try: st.link_button("Visualize Online", url)
+    except: pass
     st.graphviz_chart(graph)
 
 # show as Plotly chart
@@ -108,17 +111,22 @@ with tabChart:
 
 # show as D3 animated chart
 with tabAnim:
-    sel = st.selectbox(
-        "Select a D3 chart type:",
-        ["Collapsible Tree", "Linear Dendrogram", "Radial Dendrogram", "Network Graph"])
-    if sel == "Collapsible Tree":
-        filename = animated.makeCollapsibleTree(df)
-    elif sel == "Linear Dendrogram":
-        filename = animated.makeLinearDendrogram(df)
-    elif sel == "Radial Dendrogram":
-        filename = animated.makeRadialDendrogram(df)
-    elif sel == "Network Graph":
-        filename = animated.makeNetworkGraph(df)
+    try:
+        import modules.animated as animated
 
-    with open(filename, 'r', encoding='utf-8') as f:
-        components.html(f.read(), height=2200, width=1000)
+        sel = st.selectbox(
+            "Select a D3 chart type:",
+            ["Collapsible Tree", "Linear Dendrogram", "Radial Dendrogram", "Network Graph"])
+        if sel == "Collapsible Tree":
+            filename = animated.makeCollapsibleTree(df)
+        elif sel == "Linear Dendrogram":
+            filename = animated.makeLinearDendrogram(df)
+        elif sel == "Radial Dendrogram":
+            filename = animated.makeRadialDendrogram(df)
+        elif sel == "Network Graph":
+            filename = animated.makeNetworkGraph(df)
+
+        with open(filename, 'r', encoding='utf-8') as f:
+            components.html(f.read(), height=2200, width=1000)
+    except:
+        st.warning("Not supported.")

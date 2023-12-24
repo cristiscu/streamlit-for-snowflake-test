@@ -2,10 +2,14 @@ import os, configparser
 from sys import platform
 import pandas as pd
 from snowflake.snowpark import Session
+from snowflake.snowpark.context import get_active_session
 import streamlit as st
 
 def isLocal():
     return platform == "win32";
+
+def isStreamlitApp():
+    getStreamlitAppSession() is not None
 
 def getFullPath(filename):
     crtdir = os.path.dirname(__file__)
@@ -22,6 +26,10 @@ def getDataFrame(_session, query):
     return pd.DataFrame(rows).convert_dtypes()
 
 # ==========================================================================
+
+def getStreamlitAppSession():
+    try: return get_active_session()
+    except: return None
 
 @st.cache_resource(show_spinner="Connecting to Snowflake...", max_entries=10)
 def getSession(account, user, _password):

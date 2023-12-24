@@ -43,6 +43,7 @@ graph = ('digraph {\n'
     + '}')
 
 # show graph
-st.link_button("Visualize Online",
+try: st.link_button("Visualize Online",
     f'http://magjac.com/graphviz-visual-editor/?dot={urllib.parse.quote(graph)}')
+except: pass
 st.graphviz_chart(graph)
