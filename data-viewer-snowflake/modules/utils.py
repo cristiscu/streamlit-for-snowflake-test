@@ -18,12 +18,12 @@ def getDataFrame(session, query):
     return pd.DataFrame(rows).convert_dtypes()
 
 @st.cache_resource(show_spinner="Connecting to Snowflake...", max_entries=10)
-def getSession(account, user, password):
+def getSession(account, user, _password):
     try:
         return Session.builder.configs({
             "account": account,
             "user": user,
-            "password": password
+            "password": _password
         }).create()
     except:
         return None
