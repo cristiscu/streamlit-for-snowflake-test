@@ -4,5 +4,4 @@ plotly
 pyvis
 scipy
 networkx
-snowflake-connector-python
-snowflake-snowpark-python==1.10.0
+snowflake-snowpark-python

@@ -1,7 +1,11 @@
 import os, configparser
+from sys import platform
 import pandas as pd
 from snowflake.snowpark import Session
 import streamlit as st
+
+def isLocal():
+    return platform == "win32";
 
 def getFullPath(filename):
     crtdir = os.path.dirname(__file__)
@@ -9,20 +13,26 @@ def getFullPath(filename):
     return f"{pardir}/{filename}"
 
 # customize with your own Snowflake connection parameters
-@st.cache_resource(show_spinner="Connecting to Snowflake...")
-def getSession():
+def getLocalSession():
     parser = configparser.ConfigParser()
     parser.read(os.path.join(os.path.expanduser('~'), ".snowsql/config"))
     section = "connections.demo_conn"
-    pars = {
-        "account": parser.get(section, "accountname"),
-        "user": parser.get(section, "username"),
-        "password": os.environ['SNOWSQL_PWD']
-    }
-    return Session.builder.configs(pars).create()
+    return getSession(parser.get(section, "accountname"),
+        parser.get(section, "username"),
+        os.environ['SNOWSQL_PWD'])
+
+@st.cache_resource(show_spinner="Connecting to Snowflake...", max_entries=10)
+def getSession(account, user, password):
+    try:
+        return Session.builder.configs({
+            "account": account,
+            "user": user,
+            "password": password
+        }).create()
+    except:
+        return None
 
 @st.cache_data(show_spinner="Running a Snowflake query...")
-def getDataFrame(query):
-    conn = getSession()
-    rows = conn.sql(query).collect()
+def getDataFrame(session, query):
+    rows = session.sql(query).collect()
     return pd.DataFrame(rows).convert_dtypes()

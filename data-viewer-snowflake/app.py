@@ -18,17 +18,29 @@ def loadFile(filename):
     return pd.read_csv(filename).convert_dtypes()
 
 with st.sidebar:
-    tableName = st.text_input("Full table/view name (leave empty for CSV):")
-    if tableName is not None and len(tableName) > 0:
-        df_orig = utils.getDataFrame(f"select * from {tableName}")
+    if utils.isLocal():
+        session = utils.getLocalSession()
     else:
-        uploaded_file = st.file_uploader(
-            "Upload a CSV file", type=["csv"], accept_multiple_files=False)
-        
-        filename = utils.getFullPath("data/employees.csv")
-        if uploaded_file is not None:
-            filename = StringIO(uploaded_file.getvalue().decode("utf-8"))
+        with st.form("my-form"):
+            account = st.text_input("Account #:")
+            user = st.text_input("User Name:")
+            password = st.text_input("Password", type='password')
+            if st.form_submit_button("Connect to Snowflake"):
+                session = utils.getSession(account, user, password)
+                if session is None:
+                    st.error("Cannot connect!")
 
+    tableName = st.text_input("Full table/view name:")
+    hasTable = session is not None and tableName is not None and len(tableName) > 0
+    if hasTable:
+        df_orig = utils.getDataFrame(session, f"select * from {tableName}")
+    else:
+        filename = utils.getFullPath("data/employees.csv")
+        if utils.isLocal():
+            uploaded_file = st.file_uploader(
+                "Upload a CSV file", type=["csv"], accept_multiple_files=False)
+            if uploaded_file is not None:
+                filename = StringIO(uploaded_file.getvalue().decode("utf-8"))
         df_orig = loadFile(filename)
 
     cols = list(df_orig.columns)
@@ -43,17 +55,19 @@ with tabSource:
     st.dataframe(df_orig, use_container_width=True)
 
 with tabPath:
-    child_index, parent_index = cols.index(child) + 1, cols.index(parent) + 1
-    query = f"""
+    if hasTable:
+        child_index = cols.index(child) + 1
+        parent_index = cols.index(parent) + 1
+        query = f"""
 select repeat('  ', level - 1) || ${child_index} as name,
-   ltrim(sys_connect_by_path(${child_index}, '.'), '.') as path
+ltrim(sys_connect_by_path(${child_index}, '.'), '.') as path
 from {tableName}
 start with ${parent_index} is null
 connect by prior ${child_index} = ${parent_index}
 order by path;
 """
-    df_path = utils.getDataFrame(query)
-    st.dataframe(df_path, use_container_width=True)
+        df_path = utils.getDataFrame(session, query)
+        st.dataframe(df_path, use_container_width=True)
 
 # show in another data format
 with tabFormat:
