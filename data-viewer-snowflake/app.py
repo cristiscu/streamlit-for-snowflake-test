@@ -22,7 +22,10 @@ with st.sidebar:
         if utils.isLocal()
         else utils.getRemoteSession())
 
-    tableName = st.text_input("Full table/view name:")
+    tableName = None
+    if session is not None:
+        tableName = st.text_input("Full table/view name:")
+
     hasTable = session is not None and tableName is not None and len(tableName) > 0
     if hasTable:
         df_orig = utils.getDataFrame(session, f"select * from {tableName}")
