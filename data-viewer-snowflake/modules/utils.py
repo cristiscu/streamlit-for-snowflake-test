@@ -12,6 +12,10 @@ def getFullPath(filename):
     pardir = os.path.abspath(os.path.join(crtdir, os.pardir))
     return f"{pardir}/{filename}"
 
+@st.cache_data(show_spinner="Loading the CSV file...")
+def loadFile(filename):
+    return pd.read_csv(filename).convert_dtypes()
+
 @st.cache_data(show_spinner="Running a Snowflake query...")
 def getDataFrame(_session, query):
     rows = _session.sql(query).collect()

@@ -13,10 +13,6 @@ st.set_page_config(layout="wide")
 st.title("Hierarchical Data Viewer")
 st.caption("Display your hierarchical data with charts and graphs.")
 
-@st.cache_data(show_spinner="Loading the CSV file...")
-def loadFile(filename):
-    return pd.read_csv(filename).convert_dtypes()
-
 with st.sidebar:
     session = (utils.getLocalSession()
         if utils.isLocal()
@@ -36,7 +32,7 @@ with st.sidebar:
                 "Upload a CSV file", type=["csv"], accept_multiple_files=False)
             if uploaded_file is not None:
                 filename = StringIO(uploaded_file.getvalue().decode("utf-8"))
-        df_orig = loadFile(filename)
+        df_orig = utils.loadFile(filename)
 
     cols = list(df_orig.columns)
     child = st.selectbox("Child Column Name", cols, index=0)
