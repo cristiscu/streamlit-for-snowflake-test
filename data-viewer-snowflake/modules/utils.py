@@ -12,9 +12,9 @@ def getFullPath(filename):
     pardir = os.path.abspath(os.path.join(crtdir, os.pardir))
     return f"{pardir}/{filename}"
 
-@st.cache_resource(show_spinner="Running a Snowflake query...")
-def getDataFrame(session, query):
-    rows = session.sql(query).collect()
+@st.cache_data(show_spinner="Running a Snowflake query...")
+def getDataFrame(_session, query):
+    rows = _session.sql(query).collect()
     return pd.DataFrame(rows).convert_dtypes()
 
 # ==========================================================================
