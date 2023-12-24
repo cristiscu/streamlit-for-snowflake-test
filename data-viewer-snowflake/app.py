@@ -18,6 +18,7 @@ def loadFile(filename):
     return pd.read_csv(filename).convert_dtypes()
 
 with st.sidebar:
+    session = None
     if utils.isLocal():
         session = utils.getLocalSession()
     else:
