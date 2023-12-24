@@ -39,7 +39,8 @@ def getLocalSession():
     parser = configparser.ConfigParser()
     parser.read(os.path.join(os.path.expanduser('~'), ".snowsql/config"))
     section = "connections.demo_conn"
-    return getSession(parser.get(section, "accountname"),
+    return getSession(
+        parser.get(section, "accountname"),
         parser.get(section, "username"),
         os.environ['SNOWSQL_PWD'])
 
